@@ -46,11 +46,6 @@ jobs:
         uses: rossjrw/pr-preview-action@v1
         with:
           source-dir: ./htmlcov/
-
-      - name: upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with: 
-          path: './htmlcov/'
           preview-branch: main
           action: auto
         
