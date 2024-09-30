@@ -41,11 +41,11 @@ jobs:
         run: |
           coverage run -m test
           coverage html --omit='.venv/*'
-
-      - name: Deploy preview
-        uses: rossjrw/pr-preview-action@v1
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
         with:
-          source-dir: ./htmlcov/
-          preview-branch: main
-          action: auto
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./htmlcov
+          publish_branch: gh-pages-${{ github.event.pull_request.number }}
         
