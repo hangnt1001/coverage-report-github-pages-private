@@ -14,7 +14,9 @@ permissions:
   pages: write
   id-token: write
 
-concurrency: preview-${{ github.ref }}
+concurrency:
+  group: preview-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   run-code-coverage:
