@@ -1,18 +1,20 @@
 name: run-code-coverage
 
 on:
-  push:
-    branches: ["main"]
-  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
 
 permissions:
   contents: read
   pages: write
   id-token: write
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
+concurrency: preview-${{ github.ref }}
 
 jobs:
   run-code-coverage:
@@ -40,12 +42,15 @@ jobs:
           coverage run -m test
           coverage html --omit='.venv/*'
 
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./htmlcov/
+
       - name: upload artifact
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with: 
           path: './htmlcov/'
-      
-      - name: deploy to Github Pages
-        uses: actions/deploy-pages@v2
-        id: deployment
+          preview-branch: main
+          action: auto
         
