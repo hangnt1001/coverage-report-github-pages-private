@@ -43,21 +43,11 @@ jobs:
         run: |
           coverage run -m test
           coverage html --omit='.venv/*'
-      
-      - name: Create gh-pages branch if it doesn't exist
-        run: |
-          git fetch origin
-          if ! git rev-parse --verify origin/gh-pages-${{ github.event.pull_request.number }}; then
-            git checkout --orphan gh-pages-${{ github.event.pull_request.number }}
-            git reset --hard
-            git commit --allow-empty -m "Initial commit on gh-pages-${{ github.event.pull_request.number }}"
-            git push origin gh-pages-${{ github.event.pull_request.number }}
-          fi
-      
+    
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./htmlcov
-          publish_branch: gh-pages-${{ github.event.pull_request.number }}
-        
+          destination_dir: "pr-${{ github.event.pull_request.number }}"
+          publish_branch: gh-pages
